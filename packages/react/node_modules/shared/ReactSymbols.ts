@@ -1,0 +1,8 @@
+// 为了防止ReactElement被滥用，所以将其定义为一个Symbol类型
+
+// 首先检查当前宿主环境是否支持symbol
+const supportSymbol = typeof Symbol === 'function' && Symbol.for;
+
+export const REACT_ELEMENT_TYPE = supportSymbol
+	? Symbol.for('react.element')
+	: 0xeac7;
