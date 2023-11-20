@@ -5,8 +5,8 @@ import {
 	Key,
 	Ref,
 	Props,
-	ReactElement,
-	ElementType
+	ElementType,
+	ReactElementType
 } from 'shared/ReactTypes';
 
 // type 类型
@@ -18,8 +18,8 @@ const ReactElement = function (
 	key: Key,
 	ref: Ref,
 	props: Props
-): ReactElement {
-	const element: ReactElement = {
+): ReactElementType {
+	const element: ReactElementType = {
 		// 内部使用的字段，指明当前的对象是一个reactElement
 		$$typeof: REACT_ELEMENT_TYPE,
 		type,
