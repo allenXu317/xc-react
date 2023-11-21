@@ -4,6 +4,8 @@ import fs from 'fs';
 // 引入 plugin
 import ts from 'rollup-plugin-typescript2';
 import cjs from '@rollup/plugin-commonjs';
+// 引入replace
+import replace from '@rollup/plugin-replace';
 
 const pkgPath = path.resolve(__dirname, '../../packages');
 const distPath = path.resolve(__dirname, '../../dist/mode_modules');
@@ -22,9 +24,12 @@ export function getPackageJSON(pkgName) {
 	return JSON.parse(str);
 }
 
-export function getBaseRollupPlugins(typescript = {}) {
+export function getBaseRollupPlugins(
+	alias = { __DEV__: true },
+	typescript = {}
+) {
 	// 用于解析commonjs的plugin  pnpm i -D -w @rollup/plugin-commonjs
 	// 用于解析ts代码的plugin pnpm i -D -w rollup-plugin-typescript2
 
-	return [cjs(), ts(typescript)];
+	return [replace(alias), cjs(), ts(typescript)];
 }
