@@ -1,6 +1,6 @@
 import { Props, Key, Ref, ReactElementType } from 'shared/ReactTypes';
 import { FunctionComponent, HostComponent, WorkTag } from './workTags';
-import { FLags, NoFlags } from './fiberFlags';
+import { Flags, NoFlags } from './fiberFlags';
 import { Container } from 'hostConfig';
 
 export class FiberNode {
@@ -22,7 +22,9 @@ export class FiberNode {
 	alternate: FiberNode | null;
 
 	// 操作
-	flags: FLags;
+	flags: Flags;
+	// 子树的flag
+	subtreeFlags: Flags;
 
 	// 更新队列
 	updateQueue: unknown;
@@ -58,6 +60,7 @@ export class FiberNode {
 		// 副作用
 		// 操作标记
 		this.flags = NoFlags;
+		this.subtreeFlags = NoFlags;
 	}
 }
 
@@ -100,6 +103,7 @@ export const createWorkInProgress = (
 		// 只更新这个节点wip
 		wip.pendingProps = pendingProps;
 		wip.flags = NoFlags;
+		wip.subtreeFlags = NoFlags;
 	}
 	wip.updateQueue = current.updateQueue;
 	wip.type = current.type;

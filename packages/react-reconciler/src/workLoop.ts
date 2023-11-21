@@ -57,6 +57,13 @@ function renderRoot(root: FiberRootNode) {
 			workInProgress = null;
 		}
 	} while (true);
+
+	const finishedWork = root.current.alternate;
+	root.finishedWork = finishedWork;
+
+	// wip fiberNode树
+	// 通过commitRoot来提交渲染
+	// commitRoot(root);
 }
 
 function workLoop() {

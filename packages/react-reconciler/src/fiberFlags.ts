@@ -1,4 +1,4 @@
-export type FLags = number;
+export type Flags = number;
 
 // Placement ，ChildDeletion 是与结构操作相关的
 // Update 是与属性更新相关的
