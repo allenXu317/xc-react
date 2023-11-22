@@ -2,8 +2,10 @@
 // 调用beginWork 和 completeWork
 
 import { beginWork } from './beginWork';
+import { commitMutationEffects } from './commitWork';
 import { completeWork } from './completeWork';
 import { FiberNode, FiberRootNode, createWorkInProgress } from './fiber';
+import { MutationMask, NoFlags } from './fiberFlags';
 import { HostRoot } from './workTags';
 
 let workInProgress: FiberNode | null = null;
@@ -63,7 +65,42 @@ function renderRoot(root: FiberRootNode) {
 
 	// wip fiberNode树
 	// 通过commitRoot来提交渲染
-	// commitRoot(root);
+	commitRoot(root);
+}
+
+function commitRoot(root: FiberRootNode) {
+	const finishedWork = root.finishedWork;
+
+	if (finishedWork === null) {
+		return;
+	}
+
+	if (__DEV__) {
+		console.warn('commit阶段开始', finishedWork);
+	}
+
+	// 重置
+	root.finishedWork = null;
+
+	// 判断存在3个子阶段需要执行的操作
+	// 需要判断root自己的flags 和 subtreeFlags
+	const subtreeHasEffect =
+		(finishedWork.subtreeFlags & MutationMask) !== NoFlags;
+	const rootHasEffect = (finishedWork.flags & MutationMask) !== NoFlags;
+
+	if (subtreeHasEffect || rootHasEffect) {
+		// 如果由需要执行flag，则执行这些子阶段
+		// beforeMutation
+		// mutation - Placement
+		commitMutationEffects(finishedWork);
+		// current 指向的是最后要渲染的fiber树
+		// finishedWork 指向的是本次更新生成的wip
+		root.current = finishedWork;
+		// layout
+	} else {
+		// 没有更新发生，也需要执行这个操作
+		root.current = finishedWork;
+	}
 }
 
 function workLoop() {
