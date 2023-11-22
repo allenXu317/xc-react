@@ -23,7 +23,8 @@
 			// 为什么需要在tsconfig中配置hostConfig的路径？
 			// 对于不同的宿主环境都要实现其hostConfig
 			// 比如对于react-dom就要在react-dom文件夹下去实现对应的hostConfig
-			"hostConfig": ["./react-reconciler/src/hostConfig.ts"]
+			// 类型检查下的hostConfig
+			"hostConfig": ["./react-dom/src/hostConfig.ts"]
 		}
 	}
 }

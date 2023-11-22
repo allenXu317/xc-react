@@ -1,6 +1,8 @@
 // 递归中的归
 
 import {
+	Container,
+	Instance,
 	appendInitialChild,
 	createInstance,
 	createTextInstance
@@ -26,6 +28,8 @@ export const completeWork = (wip: FiberNode) => {
 				// 1. 构建dom
 				const instance = createInstance(wip.type, newProps); // 宿主环境的实例，对浏览器来说就是dom
 				// 2. 将DOM插入到DOM树中
+				console.log('---instance---', instance);
+
 				appendAllChildren(instance, wip);
 				wip.stateNode = instance;
 			}
@@ -61,7 +65,7 @@ export const completeWork = (wip: FiberNode) => {
 // 实现难点：需要将 类 或者 函数组件 最后真正的dom节点插入到父dom节点中
 // 插入节点的过程
 // 希望在parent节点下，插入wip节点
-function appendAllChildren(parent: FiberNode, wip: FiberNode) {
+function appendAllChildren(parent: Instance, wip: FiberNode) {
 	let node = wip.child;
 
 	// wip可能不是一个dom节点，所以需要进行递归查找里面的Hostxxx类型的节点
@@ -70,6 +74,8 @@ function appendAllChildren(parent: FiberNode, wip: FiberNode) {
 		if (node && (node.tag === HostComponent || node.tag === HostText)) {
 			// 如果找到了，就进行append插入操作
 			// 否则，就继续递归
+			console.log('----', node, parent);
+
 			appendInitialChild(parent, node.stateNode);
 		} else if (node.child !== null) {
 			// 找子节点
@@ -100,9 +106,9 @@ function appendAllChildren(parent: FiberNode, wip: FiberNode) {
 // 通过completeWork完成了这个归的过程，那么最后通过这颗fiber树的根节点就可以知道当前是不是需要对节点进行操作；
 // 同时，当在根节点知道这颗fiber树需要进行更新时，就会向下遍历，看看哪个节点的子树需要遍历；
 // 然后找到具体的节点
-function bubbleProperties(wip: FiberNode) {
+function bubbleProperties(completeWork: FiberNode) {
 	let subtreeFlags = NoFlags;
-	let child = wip.child;
+	let child = completeWork.child;
 
 	while (child !== null) {
 		// 位或操作获取子节点的flag
@@ -111,9 +117,9 @@ function bubbleProperties(wip: FiberNode) {
 		subtreeFlags |= child.flags;
 
 		// 继续遍历
-		child.return = wip;
+		child.return = completeWork;
 		child = child.sibling;
 	}
 
-	wip.subtreeFlags |= subtreeFlags;
+	completeWork.subtreeFlags |= subtreeFlags;
 }

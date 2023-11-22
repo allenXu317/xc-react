@@ -37,7 +37,7 @@ function markUpdateFromFiberToRoot(fiber: FiberNode): FiberRootNode | null {
 		node = parent;
 		parent = node.return;
 	}
-	if (node.type === HostRoot) {
+	if (node.tag === HostRoot) {
 		return node.stateNode;
 	}
 	return null;
@@ -120,7 +120,7 @@ function performUnitOfWork(fiber: FiberNode) {
 		completeUnitOfWork(fiber);
 	} else {
 		// 继续遍历
-		workInProgress = next;
+		workInProgress = next as FiberNode;
 	}
 }
 

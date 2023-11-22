@@ -1,5 +1,6 @@
-/node_modules
 
 /dist
 
 /demo_test
+
+node_modules
