@@ -53,9 +53,8 @@ const commitPlacement = (finishedWork: FiberNode) => {
 	// 获取宿主环境中原生父节点
 	const hostParent = getHostParent(finishedWork);
 	// 找到finishedWork对应的dom，并将其append到parent中
-	if (hostParent) {
-		appendPlacementNodeIntoContainer(finishedWork, hostParent);
-	}
+
+	appendPlacementNodeIntoContainer(finishedWork, hostParent);
 };
 
 function getHostParent(fiber: FiberNode) {
