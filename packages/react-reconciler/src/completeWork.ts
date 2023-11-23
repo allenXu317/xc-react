@@ -8,7 +8,12 @@ import {
 	createTextInstance
 } from 'hostConfig';
 import { FiberNode } from './fiber';
-import { HostComponent, HostRoot, HostText } from './workTags';
+import {
+	FunctionComponent,
+	HostComponent,
+	HostRoot,
+	HostText
+} from './workTags';
 import { NoFlags } from './fiberFlags';
 
 export const completeWork = (wip: FiberNode) => {
@@ -28,7 +33,6 @@ export const completeWork = (wip: FiberNode) => {
 				// 1. 构建dom
 				const instance = createInstance(wip.type, newProps); // 宿主环境的实例，对浏览器来说就是dom
 				// 2. 将DOM插入到DOM树中
-				console.log('---instance---', instance);
 
 				appendAllChildren(instance, wip);
 				wip.stateNode = instance;
@@ -53,7 +57,10 @@ export const completeWork = (wip: FiberNode) => {
 		case HostRoot:
 			bubbleProperties(wip);
 			return null;
-
+		// 支持函数组件
+		case FunctionComponent:
+			bubbleProperties(wip);
+			return null;
 		default:
 			if (__DEV__) {
 				console.warn('未处理的completeWork情况', wip);
@@ -74,7 +81,6 @@ function appendAllChildren(parent: Instance, wip: FiberNode) {
 		if (node && (node.tag === HostComponent || node.tag === HostText)) {
 			// 如果找到了，就进行append插入操作
 			// 否则，就继续递归
-			console.log('----', node, parent);
 
 			appendInitialChild(parent, node.stateNode);
 		} else if (node.child !== null) {

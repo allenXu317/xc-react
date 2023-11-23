@@ -38,6 +38,7 @@ export const commitMutationEffects = (finishedWork: FiberNode) => {
 const commitMutationEffectsOnFiber = (finishedWork: FiberNode) => {
 	const flags = finishedWork.flags;
 
+	// 性能优化的操作
 	if ((flags & Placement) !== NoFlags) {
 		commitPlacement(finishedWork);
 
@@ -64,12 +65,9 @@ function getHostParent(fiber: FiberNode) {
 		const parentTag = parent.tag;
 		// hostcomponent hostroot - 这两种情况下的fiber.tag对应的就是原生节点
 		if (parentTag === HostComponent) {
-			console.log('!!!!!!');
 			return parent.stateNode; // HostComponent 类型的fiber，stateNode获取原生节点
 		}
 		if (parentTag === HostRoot) {
-			console.log('?????');
-
 			return (parent.stateNode as FiberRootNode).container; // HostRoot 类型的fiber，stateNode.container获取原生节点
 		}
 		// 向上遍历
@@ -87,22 +85,16 @@ function appendPlacementNodeIntoContainer(
 	// 传入的finishedWork不一定是host类型的节点
 	// 向下遍历，通过传进来的fiber，找到对应的宿主环境的host
 	if (finishedWork.tag === HostComponent || finishedWork.tag === HostText) {
-		console.log('=======', finishedWork);
-
 		appendChildToContainer(hostParent, finishedWork.stateNode);
 		return;
 	}
 	// 向下遍历
 	const child = finishedWork.child;
 	if (child !== null) {
-		console.log('[[[[[[[', hostParent, finishedWork, child);
-
 		appendPlacementNodeIntoContainer(child, hostParent);
 		let sibling = child.sibling;
 
 		while (sibling !== null) {
-			console.log(']]]]]]]]');
-
 			appendPlacementNodeIntoContainer(sibling, hostParent);
 			sibling = sibling.sibling;
 		}

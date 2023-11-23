@@ -7,15 +7,12 @@ export type Instance = Element;
 export const createInstance = (type: string, props: any): Instance => {
 	// TODO 处理props
 	const element = document.createElement(type);
-	console.log('--props--', props, type, element);
 
 	return element;
 };
 
 // 模拟插入节点
 export const appendInitialChild = (parent: Instance, child: Instance) => {
-	console.log('--parents child--', parent, child);
-
 	parent.appendChild(child);
 };
 
